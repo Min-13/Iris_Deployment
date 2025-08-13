@@ -1,3 +1,29 @@
+# DIAGNOSTICS: paste near top of app.py
+import os, sys, hashlib
+MODEL_PATH = "rf_model.sav"
+
+def sha256_of_file(path):
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(8192), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+print("DEBUG: cwd", os.getcwd(), file=sys.stderr)
+print("DEBUG: abs model path", os.path.abspath(MODEL_PATH), file=sys.stderr)
+print("DEBUG: exists", os.path.exists(MODEL_PATH), file=sys.stderr)
+if os.path.exists(MODEL_PATH):
+    print("DEBUG: size", os.path.getsize(MODEL_PATH), file=sys.stderr)
+    try:
+        print("DEBUG: sha256", sha256_of_file(MODEL_PATH), file=sys.stderr)
+    except Exception as e:
+        print("DEBUG: checksum error", e, file=sys.stderr)
+try:
+    import sklearn
+    print("DEBUG: python", sys.version.splitlines()[0], "sklearn", sklearn.__version__, file=sys.stderr)
+except Exception as e:
+    print("DEBUG: sklearn import error", e, file=sys.stderr)
+
 import streamlit as st
 import pandas as pd
 import numpy as np
